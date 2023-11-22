@@ -1,14 +1,11 @@
-import Joi from "joi";
-
 import contactService from "../models/index.js";
 
 import { HttpError } from "../helpers/index.js";
 
-const contactAddSchema = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().required(),
-  phone: Joi.string().required(),
-});
+import {
+  contactAddSchema,
+  contactUpdateSchema,
+} from "../schemas/contactSchema.js";
 
 const getAllContacts = async (req, res, next) => {
   try {
@@ -45,8 +42,42 @@ const add = async (req, res, next) => {
   }
 };
 
+const updateById = async (req, res, next) => {
+  try {
+    const { error } = contactUpdateSchema.validate(req.body);
+    if (error) {
+      throw HttpError(400, error.message);
+    }
+    const { contactId } = req.params;
+    const result = await contactService.updateContact(contactId, req.body);
+    if (!result) {
+      throw HttpError(404, `Contact with id=${id} not found`);
+    }
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteById = async (req, res, next) => {
+  try {
+    const { contactId } = req.params;
+    const result = await contactService.removeContact(contactId);
+    if (!result) {
+      throw HttpError(404, "Not found");
+    }
+    res.json({
+      message: "contact deleted",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   getAllContacts,
   getById,
   add,
+  updateById,
+  deleteById,
 };
