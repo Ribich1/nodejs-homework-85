@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { nanoid } from "nanoid";
+import { HttpError } from "../helpers/index.js";
 
 const contactsPath = path.resolve("models", "contacts.json");
 const listContacts = async () => {
@@ -46,7 +47,8 @@ const updateContact = async (contactId, body) => {
   const contacts = await listContacts();
   const index = contacts.findIndex((item) => item.id === contactId);
   if (index === -1) {
-    return null;
+    throw HttpError(404, "Not found");
+    return;
   }
   contacts[index] = { ...contacts[index], ...body };
   await updateContactsFn(contacts);

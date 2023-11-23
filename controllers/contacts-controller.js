@@ -21,7 +21,7 @@ const getById = async (req, res, next) => {
     const { contactId } = req.params;
     const result = await contactService.getContactById(contactId);
     if (!result) {
-      throw HttpError(404, `Contact with id=${contactId} not found`);
+      throw HttpError(404, "Not found");
     }
     res.json(result);
   } catch (error) {
@@ -51,7 +51,7 @@ const updateById = async (req, res, next) => {
     const { contactId } = req.params;
     const result = await contactService.updateContact(contactId, req.body);
     if (!result) {
-      throw HttpError(404, `Contact with id=${id} not found`);
+      throw HttpError(404, "Not found");
     }
     res.json(result);
   } catch (error) {
