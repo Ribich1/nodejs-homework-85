@@ -1,4 +1,8 @@
 import { Schema, model } from "mongoose";
+import Joi from "joi";
+
+
+import { handleSaveError } from "./hooks.js";
 
 const contactSchema = new Schema({
   name: {
@@ -16,6 +20,32 @@ const contactSchema = new Schema({
     default: false,
   },
 });
+
+contactSchema.post("save", handleSaveError);
+
+export const contactAddSchema = Joi.object({
+  name: Joi.string()
+    .required()
+    .messages({
+      "any.required": `missing required "name field"`,
+      "string.base": `"name field" must be string`,
+    }),
+  phone: Joi.string()
+    .required()
+    .messages({ "any.required": `missing required "phone field"` }),
+  email: Joi.string()
+    .required()
+    .messages({ "any.required": `missing required "email field"` }),
+    favorite: Joi.boolean(),
+});
+
+export const contactUpdateSchema = Joi.object({
+  name: Joi.string(),
+  email: Joi.string(),
+  phone: Joi.string(),
+  favorite: Joi.boolean(),
+});
+
 
 const Contact = model("contact", contactSchema);
 

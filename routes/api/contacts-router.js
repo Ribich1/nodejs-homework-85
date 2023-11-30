@@ -9,7 +9,7 @@ import { validateBody } from "../../decorators/index.js";
 import {
   contactAddSchema,
   contactUpdateSchema,
-} from "../../schemas/contactSchema.js";
+} from "../../models/Contact.js";
 
 const contactsRouter = express.Router();
 
@@ -17,12 +17,13 @@ contactsRouter.get("/", contactsController.getAllContacts);
 
 // contactsRouter.get("/:contactId", contactsController.getById);
 
-// contactsRouter.post(
-//   "/",
-//   isEmptyBody,
-//   validateBody(contactAddSchema),
-//   contactsController.add
-// );
+contactsRouter.post(
+  "/",
+  isEmptyBody,
+  validateBody(contactAddSchema),
+  contactsController.add
+);
+// validateBody(contactAddSchema),
 
 // contactsRouter.delete("/:contactId", contactsController.deleteById);
 

@@ -4,7 +4,6 @@ import { ctrlWrapper } from "../decorators/index.js";
 
 import { HttpError } from "../helpers/index.js";
 
-
 const getAllContacts = async (req, res) => {
   const result = await Contact.find();
   res.json(result);
@@ -19,10 +18,10 @@ const getAllContacts = async (req, res) => {
 //   res.json(result);
 // };
 
-// const add = async (req, res) => {
-//   const result = await contactService.addContact(req.body);
-//   res.status(201).json(result);
-// };
+const add = async (req, res) => {
+  const result = await Contact.create(req.body);
+  res.status(201).json(result);
+};
 
 // const updateById = async (req, res) => {
 //   const { contactId } = req.params;
@@ -47,7 +46,7 @@ const getAllContacts = async (req, res) => {
 export default {
   getAllContacts: ctrlWrapper(getAllContacts),
   // getById: ctrlWrapper(getById),
-  // add: ctrlWrapper(add),
+  add: ctrlWrapper(add),
   // updateById: ctrlWrapper(updateById),
   // deleteById: ctrlWrapper(deleteById),
 };
