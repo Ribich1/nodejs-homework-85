@@ -44,3 +44,4 @@ export const userSigninSchema = Joi.object({
 const User = model("user", userSchema);
 
 export default User;
+ 

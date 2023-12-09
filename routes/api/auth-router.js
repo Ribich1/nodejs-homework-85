@@ -16,5 +16,8 @@ authRouter.post(
   validateBody(userSignupSchema),
   authController.signup
 );
+authRouter.post("/signin",isEmptyBody,
+validateBody(userSigninSchema),
+authController.signin)
 
 export default authRouter;
