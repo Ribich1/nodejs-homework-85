@@ -6,14 +6,14 @@ import { HttpError } from "../helpers/index.js";
 
 const getAllContacts = async (req, res) => {
   const { _id: owner } = req.user;
-  const { page = 1, limit = 10, ...filterParams } = req.query;
+  const { page = 1, limit = 20, ...filterParams } = req.query;
   const skip = (page - 1) * limit;
   const filter = { owner, ...filterParams };
   console.log(filter);
 
   const result = await Contact.find(filter, "-createdAt -updateAt", { skip, limit }).populate(
     "owner",
-    "username email"
+    "email subscription"
   );
   res.json(result);
 };
