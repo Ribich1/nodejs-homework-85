@@ -11,7 +11,7 @@ const { JWT_SECRET } = process.env;
 const authenticate = async (req, res, next) => {
   const { authorization } = req.headers;
   if (!authorization) {
-    throw HttpError(401, "Authorization header not found");
+    throw HttpError(401, "No authorized");
   }
   const [bearer, token] = authorization.split(" ");
   if (bearer !== "Bearer") {

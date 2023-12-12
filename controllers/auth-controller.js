@@ -52,9 +52,9 @@ const signin = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  const { username, email } = req.user;
+  const { email, subscription } = req.user;
 
-  res.json({ email: email, subscription: username.subscription || "starter" });
+  res.json({ email: email, subscription: subscription || "starter" });
 };
 
 const signout = async (req, res) => {
