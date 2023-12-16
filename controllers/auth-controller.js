@@ -1,5 +1,9 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import fs from "fs/promises";
+import path from "path";
+
+import gravatar from "gravatar";
 
 import User from "../models/User.js";
 
@@ -9,6 +13,8 @@ import { HttpError } from "../helpers/index.js";
 
 const { JWT_SECRET } = process.env;
 
+const avatarsPath = path.resolve("public", "avatars");
+
 const signup = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
@@ -17,8 +23,15 @@ const signup = async (req, res) => {
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
+  const hashEmail = await bcrypt.hash(email, 10);
 
-  const newUser = await User.create({ ...req.body, password: hashPassword });
+  const gravatarUrl = `https://www.gravatar.com/avatar/${hashEmail}?d=wavatar&s=250`;
+
+  const newUser = await User.create({
+    ...req.body,
+    password: hashPassword,
+    avatarURL: gravatarUrl,
+  });
   res.status(201).json({
     user: {
       email: newUser.email,
@@ -51,6 +64,23 @@ const signin = async (req, res) => {
   });
 };
 
+const updAvatar = async (req, res) => {
+  const { _id: owner } = req.user;
+  const { path: oldPath, filename } = req.file;
+  const newPath = path.join(avatarsPath, filename);
+
+  await fs.rename(oldPath, newPath);
+  const avatarURL = path.join("avatars", filename);
+
+  const result = await User.findByIdAndUpdate(owner, { avatarURL });
+
+  if (!result) {
+    throw HttpError(404, "Not found");
+  }
+
+  res.json({ avatarURL });
+};
+
 const getCurrent = async (req, res) => {
   const { email, subscription } = req.user;
 
@@ -68,4 +98,5 @@ export default {
   signin: ctrlWrapper(signin),
   getCurrent: ctrlWrapper(getCurrent),
   signout: ctrlWrapper(signout),
+  updAvatar: ctrlWrapper(updAvatar),
 };
