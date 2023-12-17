@@ -18,6 +18,7 @@ const limits = { fileSize: 5 * 1024 * 1024 };
 
 const fileFilter = (req, file, cb) => {
   const extention = file.originalname.split(".").pop();
+  console.log("extention :>> ", extention);
   if (extention === "exe") {
     return cb(HttpError(400, "Invalid file extention"));
   }
@@ -27,7 +28,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage,
   limits,
-  //   fileFilter,
+  fileFilter,
 });
 
 export default upload;

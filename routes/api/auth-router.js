@@ -11,7 +11,11 @@ import {
 
 import { validateBody } from "../../decorators/index.js";
 
-import { userSignupSchema, userSigninSchema } from "../../models/User.js";
+import {
+  userSignupSchema,
+  userSigninSchema,
+  userEmailSchema,
+} from "../../models/User.js";
 
 const authRouter = express.Router();
 
@@ -38,6 +42,14 @@ authRouter.patch(
   upload.single("avatar"),
   mainJimpResize,
   authController.updAvatar
+);
+
+authRouter.get("/verify/:verificationToken", authController.verify);
+authRouter.post(
+  "/verify",
+  isEmptyBody,
+  validateBody(userEmailSchema),
+  authController.resendVerify
 );
 
 export default authRouter;
